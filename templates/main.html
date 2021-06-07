@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Cichociemni</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap -->
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+        <link
+            href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css"
+            rel="stylesheet"
+        />
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css"
+            type="text/css"
+        />
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+        <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+        <style>
+
+            .main-container {
+                background-color: darkolivegreen;
+                height: 100vh;
+            }
+            #map-container {
+                position: relative;
+                height: 70vh;
+                min-height: 300px;
+                width: 100vw;
+            }
+            html, body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            body * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            .map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="main-container">
+            <div class="pos-f-t">
+                <nav class="navbar navbar-dark bg-dark">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <h5 class="text-white h4">Lokalizacje zrzutów Cichociemnych</h5>
+                </nav>
+                <div class="collapse" id="navbarToggleExternalContent">
+                    <div class="bg-dark p-4">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="city-input" class="text-white h4">Miasto</label>
+                                <select class="form-control" name="city-input" data-live-search="true">
+                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
+                                     <option data-tokens="mustard">Burger, Shake and a Smile</option>
+                                     <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="year-input" class="text-white h4">Rok</label>
+                                <select class="form-control" name="year-input" data-live-search="true">
+                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
+                                    <option data-tokens="mustard">Burger, Shake and a Smile</option>
+                                    <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="author-input" class="text-white h4">Autor</label>
+                                <select class="form-control" name="author-input" data-live-search="true">
+                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
+                                     <option data-tokens="mustard">Burger, Shake and a Smile</option>
+                                     <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="region-input" class="text-white h4">Region</label>
+                                <select class="form-control" name="region-input" data-live-search="true">
+                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
+                                    <option data-tokens="mustard">Burger, Shake and a Smile</option>
+                                    <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="map-container" class="h-100 d-flex flex-column">
+                <div id="comparasion-map" >
+                    <div id="streets" class="map"></div>
+                    <div id="historic" class="map"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const style1 = 'cknycny9p1m6l17np8zp5s27p';
+            const style2 = 'ckplemisi0egv17m4exbntnws';
+            const center = {'lat': 21.01178, 'lon': 52.21}
+            const zoomLevel = 12;
+            mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
+
+            let beforeMap = new mapboxgl.Map({
+                container: 'streets',
+                style: 'mapbox://styles/piotrwegrzyn/' + style1,
+                center: [center.lat, center.lon],
+                zoom: zoomLevel,
+
+            });
+
+            let afterMap = new mapboxgl.Map({
+                container: 'historic',
+                center: [center.lat, center.lon],
+                zoom: zoomLevel,
+                style: 'mapbox://styles/piotrwegrzyn/' + style2
+            });
+
+            afterMap.addControl(
+                new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+                })
+            );
+
+            let container = '#comparasion-map';
+
+            let map = new mapboxgl.Compare(
+                beforeMap,
+                afterMap,
+                container,
+            );
+        $('select').selectpicker();
+        </script>
+    </body>
+</html>
