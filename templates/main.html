@@ -80,33 +80,33 @@
                             <div class="form-group col-md-3">
                                 <label for="city-input" class="text-white h4">Miasto</label>
                                 <select class="form-control" name="city-input" data-live-search="true">
-                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
-                                     <option data-tokens="mustard">Burger, Shake and a Smile</option>
-                                     <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                    {%  for city in cities %}
+                                        <option data-tokens="{{ city }}" value="{{ city }}">{{ city }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="year-input" class="text-white h4">Rok</label>
                                 <select class="form-control" name="year-input" data-live-search="true">
-                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
-                                    <option data-tokens="mustard">Burger, Shake and a Smile</option>
-                                    <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                    {%  for map_year in map_years %}
+                                        <option data-tokens="{{ map_year }}" value="{{ map_year }}">{{ map_year }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="author-input" class="text-white h4">Autor</label>
                                 <select class="form-control" name="author-input" data-live-search="true">
-                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
-                                     <option data-tokens="mustard">Burger, Shake and a Smile</option>
-                                     <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                    {%  for author in authors %}
+                                        <option data-tokens="{{ author }}" value="{{ author }}">{{ author }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="region-input" class="text-white h4">Region</label>
                                 <select class="form-control" name="region-input" data-live-search="true">
-                                    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
-                                    <option data-tokens="mustard">Burger, Shake and a Smile</option>
-                                    <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                    {%  for region in regions %}
+                                        <option data-tokens="{{ region }}" value="{{ region }}">{{ region }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
         <script>
             const style1 = 'cknycny9p1m6l17np8zp5s27p';
             const style2 = 'ckplemisi0egv17m4exbntnws';
-            const center = {'lat': 21.01178, 'lon': 52.21}
+            const center = {'lat': 21.01178, 'lon': 52.17}
             const zoomLevel = 12;
             mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
 
