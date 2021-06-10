@@ -79,15 +79,15 @@
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="city-input" class="text-white h4">Miasto</label>
-                                <select class="form-control" name="city-input" data-live-search="true">
+                                <select id="city-input" class="form-control" name="city-input" data-live-search="true">
                                     {%  for city in cities %}
-                                        <option data-tokens="{{ city }}" value="{{ city }}">{{ city }}</option>
+                                        <option data-tokens="{{ city.name }}" value="{{ city.coordinates }}">{{ city.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="year-input" class="text-white h4">Rok</label>
-                                <select class="form-control" name="year-input" data-live-search="true">
+                                <select id="year-input" class="form-control" name="year-input" data-live-search="true">
                                     {%  for map_year in map_years %}
                                         <option data-tokens="{{ map_year }}" value="{{ map_year }}">{{ map_year }}</option>
                                     {% endfor %}
@@ -95,7 +95,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="author-input" class="text-white h4">Autor</label>
-                                <select class="form-control" name="author-input" data-live-search="true">
+                                <select id="author-input" class="form-control" name="author-input" data-live-search="true">
                                     {%  for author in authors %}
                                         <option data-tokens="{{ author }}" value="{{ author }}">{{ author }}</option>
                                     {% endfor %}
@@ -103,7 +103,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="region-input" class="text-white h4">Region</label>
-                                <select class="form-control" name="region-input" data-live-search="true">
+                                <select id="region-input" class="form-control" name="region-input" data-live-search="true">
                                     {%  for region in regions %}
                                         <option data-tokens="{{ region }}" value="{{ region }}">{{ region }}</option>
                                     {% endfor %}
@@ -158,7 +158,19 @@
                 afterMap,
                 container,
             );
-        $('select').selectpicker();
+
+            $('select').selectpicker();
+
+            function setCityLocation() {
+                let coordinates = document.getElementById("city-input").value.split(';')
+                beforeMap.flyTo({
+                    center: [coordinates[0], coordinates[1]],
+                    essential: true
+                });
+            }
+
+            document.getElementById("city-input").addEventListener("change", setCityLocation);
+
         </script>
     </body>
 </html>
