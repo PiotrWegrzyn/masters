@@ -85,7 +85,7 @@ beforeMap.on('load', () => {
         filter: ['in', '$type', 'LineString']
     });
 
-    beforeMap.addControl(new mapboxgl.NavigationControl());
+    afterMap.addControl(new mapboxgl.NavigationControl());
 });
 
 beforeMap.on('click', (e) => {
@@ -136,6 +136,15 @@ beforeMap.on('click', (e) => {
     beforeMap.getSource('geojson').setData(geojson);
 });
 
+beforeMap.on('mousemove', (e) => {
+    const features = beforeMap.queryRenderedFeatures(e.point, {
+        layers: ['measure-points']
+    });
+    // Change the cursor to a pointer when hovering over a point on the beforeMap.
+    // Otherwise cursor is a crosshair.
+    beforeMap.getCanvas().style.cursor = features.length ? 'pointer': 'crosshair';
+});
+
 beforeMap.on('click', 'zrzutymerge-btmnix', (e) => {
     beforeMap.flyTo({
         center: e.features[0].geometry.coordinates
@@ -150,15 +159,6 @@ beforeMap.on('mouseenter', 'zrzutymerge-btmnix', () => {
 // Change it back to a pointer when it leaves.
 beforeMap.on('mouseleave', 'zrzutymerge-btmnix', () => {
     beforeMap.getCanvas().style.cursor = '';
-});
-
-beforeMap.on('mousemove', (e) => {
-    const features = beforeMap.queryRenderedFeatures(e.point, {
-        layers: ['measure-points']
-    });
-    // Change the cursor to a pointer when hovering over a point on the beforeMap.
-    // Otherwise cursor is a crosshair.
-    beforeMap.getCanvas().style.cursor = features.length ? 'pointer': 'crosshair';
 });
 
 $('select').selectpicker();
