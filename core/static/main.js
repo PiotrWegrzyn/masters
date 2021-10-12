@@ -85,71 +85,71 @@ beforeMap.on('load', () => {
         filter: ['in', '$type', 'LineString']
     });
 
-    beforeMap.on('click', (e) => {
-        const features = beforeMap.queryRenderedFeatures(e.point, {
-            layers: ['measure-points']
-        });
-
-        // Remove the linestring from the group
-        // so we can redraw it based on the points collection.
-        if (geojson.features.length > 1) geojson.features.pop();
-
-        // Clear the distance container to populate it with a new value.
-        distanceContainer.innerHTML = '';
-
-        // If a feature was clicked, remove it from the beforeMap.
-        if (features.length) {
-            const id = features[0].properties.id;
-            geojson.features = geojson.features.filter((point) => point.properties.id !== id);
-        } else {
-            const point = {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [e.lngLat.lng, e.lngLat.lat]
-                },
-                'properties': {
-                    'id': String(new Date().getTime())
-                }
-            };
-
-            geojson.features.push(point);
-        }
-
-        if (geojson.features.length > 1) {
-            linestring.geometry.coordinates = geojson.features.map(
-                (point) => point.geometry.coordinates
-            );
-
-            geojson.features.push(linestring);
-
-            // Populate the distanceContainer with total distance
-            const value = document.createElement('pre');
-            const distance = turf.length(linestring);
-            value.textContent = `Total distance: ${distance.toLocaleString()}km`;
-            distanceContainer.appendChild(value);
-        }
-
-        beforeMap.getSource('geojson').setData(geojson);
-    });
-
-    beforeMap.on('click', 'zrzutymerge-btmnix', (e) => {
-        beforeMap.flyTo({
-            center: e.features[0].geometry.coordinates
-        });
-    });
-
-    // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-    beforeMap.on('mouseenter', 'zrzutymerge-btmnix', () => {
-        beforeMap.getCanvas().style.cursor = 'pointer';
-    });
-
-    // Change it back to a pointer when it leaves.
-    beforeMap.on('mouseleave', 'zrzutymerge-btmnix', () => {
-        beforeMap.getCanvas().style.cursor = '';
-    });
-
     beforeMap.addControl(new mapboxgl.NavigationControl());
+});
+
+beforeMap.on('click', (e) => {
+    const features = beforeMap.queryRenderedFeatures(e.point, {
+        layers: ['measure-points']
+    });
+
+    // Remove the linestring from the group
+    // so we can redraw it based on the points collection.
+    if (geojson.features.length > 1) geojson.features.pop();
+
+    // Clear the distance container to populate it with a new value.
+    distanceContainer.innerHTML = '';
+
+    // If a feature was clicked, remove it from the beforeMap.
+    if (features.length) {
+        const id = features[0].properties.id;
+        geojson.features = geojson.features.filter((point) => point.properties.id !== id);
+    } else {
+        const point = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [e.lngLat.lng, e.lngLat.lat]
+            },
+            'properties': {
+                'id': String(new Date().getTime())
+            }
+        };
+
+        geojson.features.push(point);
+    }
+
+    if (geojson.features.length > 1) {
+        linestring.geometry.coordinates = geojson.features.map(
+            (point) => point.geometry.coordinates
+        );
+
+        geojson.features.push(linestring);
+
+        // Populate the distanceContainer with total distance
+        const value = document.createElement('pre');
+        const distance = turf.length(linestring);
+        value.textContent = `Total distance: ${distance.toLocaleString()}km`;
+        distanceContainer.appendChild(value);
+    }
+
+    beforeMap.getSource('geojson').setData(geojson);
+});
+
+beforeMap.on('click', 'zrzutymerge-btmnix', (e) => {
+    beforeMap.flyTo({
+        center: e.features[0].geometry.coordinates
+    });
+});
+
+// Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+beforeMap.on('mouseenter', 'zrzutymerge-btmnix', () => {
+    beforeMap.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+beforeMap.on('mouseleave', 'zrzutymerge-btmnix', () => {
+    beforeMap.getCanvas().style.cursor = '';
 });
 
 beforeMap.on('mousemove', (e) => {
