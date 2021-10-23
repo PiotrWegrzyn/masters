@@ -2,7 +2,7 @@
     background-color: white;
     height: 100vh;
 }
-#map-container {
+.map-container {
     position: relative;
     height: 70vh;
     min-height: 300px;

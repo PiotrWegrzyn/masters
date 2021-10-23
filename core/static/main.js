@@ -27,6 +27,20 @@ afterMap.addControl(
     })
 );
 
+let soloMap = new mapboxgl.Map({
+    container: 'historicSolo',
+    center: [center.lat, center.lon],
+    zoom: zoomLevel,
+    style: 'mapbox://styles/piotrwegrzyn/' + style1
+});
+
+soloMap.addControl(
+    new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+    })
+);
+
 let container = '#comparasion-map';
 
 let map = new mapboxgl.Compare(
@@ -57,40 +71,18 @@ function easing(t) {
 }
 
 beforeMap.on('load', () => {
-    beforeMap.addSource('geojson', {
-    'type': 'geojson',
-    'data': geojson
-    });
 
-    // Add styles to the beforeMap
-    beforeMap.addLayer({
-        id: 'measure-points',
-        type: 'circle',
-        source: 'geojson',
-        paint: {
-            'circle-radius': 5,
-            'circle-color': '#000'
-        },
-        filter: ['in', '$type', 'Point']
-    });
-    beforeMap.addLayer({
-        id: 'measure-lines',
-        type: 'line',
-        source: 'geojson',
-        layout: {
-            'line-cap': 'round',
-            'line-join': 'round'
-        },
-        paint: {
-            'line-color': '#000',
-            'line-width': 2.5
-        },
-        filter: ['in', '$type', 'LineString']
-    });
     afterMap.addControl(new mapboxgl.NavigationControl());
+    soloMap.addControl(new mapboxgl.NavigationControl());
 
     addKeyboardControl(afterMap);
     addMeasurePoints(beforeMap);
+
+    addKeyboardControl(soloMap);
+    addMeasurePoints(soloMap);
+
+    hideMap('comparison-map-container');
+    // hideMap('solo-map-container');
 
 });
 
@@ -157,6 +149,37 @@ function addKeyboardControl(map){
 }
 
 function addMeasurePoints(map){
+    map.addSource('geojson', {
+        'type': 'geojson',
+        'data': geojson
+    });
+
+    // Add styles to the beforeMap
+    map.addLayer({
+        id: 'measure-points',
+        type: 'circle',
+        source: 'geojson',
+        paint: {
+            'circle-radius': 5,
+            'circle-color': '#000'
+        },
+        filter: ['in', '$type', 'Point']
+    });
+    map.addLayer({
+        id: 'measure-lines',
+        type: 'line',
+        source: 'geojson',
+        layout: {
+            'line-cap': 'round',
+            'line-join': 'round'
+        },
+        paint: {
+            'line-color': '#000',
+            'line-width': 2.5
+        },
+        filter: ['in', '$type', 'LineString']
+    });
+
 
     map.on('click', (e) => {
         const features = map.queryRenderedFeatures(e.point, {
@@ -214,4 +237,12 @@ function addMeasurePoints(map){
         // Otherwise cursor is a crosshair.
         map.getCanvas().style.cursor = features.length ? 'pointer': 'crosshair';
     });
+}
+
+function showMap(mapId){
+    document.getElementById(mapId).classList.add("h-100", "d-flex", "flex-column");
+}
+
+function hideMap(mapId){
+    document.getElementById(mapId).classList.remove("h-100", "d-flex", "flex-column");
 }
