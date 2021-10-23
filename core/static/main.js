@@ -35,7 +35,6 @@ let map = new mapboxgl.Compare(
     container,
 );
 
-
 const distanceContainer = document.getElementById('distance');
 
 // GeoJSON object to hold our measurement features
@@ -93,22 +92,6 @@ beforeMap.on('load', () => {
     addKeyboardControl(afterMap);
     addMeasurePoints(beforeMap);
 
-});
-
-beforeMap.on('click', 'zrzutymerge-btmnix', (e) => {
-    beforeMap.flyTo({
-        center: e.features[0].geometry.coordinates
-    });
-});
-
-// Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-beforeMap.on('mouseenter', 'zrzutymerge-btmnix', () => {
-    beforeMap.getCanvas().style.cursor = 'pointer';
-});
-
-// Change it back to a pointer when it leaves.
-beforeMap.on('mouseleave', 'zrzutymerge-btmnix', () => {
-    beforeMap.getCanvas().style.cursor = '';
 });
 
 $('select').selectpicker();
