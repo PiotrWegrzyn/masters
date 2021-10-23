@@ -246,3 +246,30 @@ function showMap(mapId){
 function hideMap(mapId){
     document.getElementById(mapId).classList.remove("h-100", "d-flex", "flex-column");
 }
+
+function showCompareTool() {
+    showMap('comparison-map-container');
+    hideMap('solo-map-container');
+}
+
+function addButton(id, text, callback){
+        const link = document.createElement('a');
+        link.id = id;
+        link.href = '#';
+        link.textContent = text;
+        link.className = 'active';
+
+        // Show or hide layer when the toggle is clicked.
+        link.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            callback();
+        };
+
+        const layers = document.getElementById('menu');
+        layers.appendChild(link);
+}
+
+soloMap.on('idle', () => {
+        addButton('compare', 'compareTool', showCompareTool)
+});
