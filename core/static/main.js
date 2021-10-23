@@ -275,12 +275,12 @@ function addButton(menu, id, text, callback, className=''){
         menu.appendChild(link);
 }
 
-soloMap.on('idle', () => {
+soloMap.on('load', () => {
         const menu = document.getElementById('soloMapMenu');
         addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
 });
 
-soloMap.on('idle', () => {
+soloMap.on('load', () => {
         const menu = document.getElementById('comparisonMapMenu');
         addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
 });
