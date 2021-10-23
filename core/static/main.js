@@ -53,6 +53,10 @@ const linestring = {
     }
 };
 
+function easing(t) {
+    return t * (2 - t);
+}
+
 beforeMap.on('load', () => {
     beforeMap.addSource('geojson', {
     'type': 'geojson',
@@ -84,8 +88,10 @@ beforeMap.on('load', () => {
         },
         filter: ['in', '$type', 'LineString']
     });
-
     afterMap.addControl(new mapboxgl.NavigationControl());
+
+    addKeyboardControl(afterMap);
+
 });
 
 beforeMap.on('click', (e) => {
@@ -182,3 +188,44 @@ function setCityLocation() {
 
 }
 document.getElementById("city-input").addEventListener("change", setCityLocation);
+
+function addKeyboardControl(map){
+    const deltaDistance = 100;
+
+    // degrees the map rotates when the left or right arrow is clicked
+    const deltaDegrees = 25;
+
+    map.getCanvas().focus();
+
+    map.getCanvas().addEventListener(
+        'keydown',
+        (e) => {
+            e.preventDefault();
+            if (e.which === 38) {
+                // up
+                map.panBy([0, -deltaDistance], {
+                    easing: easing
+                });
+            } else if (e.which === 40) {
+                // down
+                map.panBy([0, deltaDistance], {
+                    easing: easing
+                });
+            } else if (e.which === 37) {
+                // left
+                map.easeTo({
+                    bearing: map.getBearing() - deltaDegrees,
+                    easing: easing
+                });
+            } else if (e.which === 39) {
+                // right
+                map.easeTo({
+                    bearing: map.getBearing() + deltaDegrees,
+                    easing: easing
+                });
+            }
+        },
+        true
+    );
+
+}
