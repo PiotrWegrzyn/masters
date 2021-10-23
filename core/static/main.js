@@ -252,12 +252,17 @@ function showCompareTool() {
     hideMap('solo-map-container');
 }
 
-function addButton(id, text, callback){
+function showSoloMap() {
+    showMap('solo-map-container');
+    hideMap('comparison-map-container');
+}
+
+function addButton(menu, id, text, callback, className=''){
         const link = document.createElement('a');
         link.id = id;
         link.href = '#';
         link.textContent = text;
-        link.className = 'active';
+        link.className = className;
 
         // Show or hide layer when the toggle is clicked.
         link.onclick = function (e) {
@@ -266,10 +271,16 @@ function addButton(id, text, callback){
             callback();
         };
 
-        const layers = document.getElementById('menu');
-        layers.appendChild(link);
+
+        menu.appendChild(link);
 }
 
 soloMap.on('idle', () => {
-        addButton('compare', 'compareTool', showCompareTool)
+        const menu = document.getElementById('soloMapMenu');
+        addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
+});
+
+soloMap.on('idle', () => {
+        const menu = document.getElementById('comparisonMapMenu');
+        addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
 });
