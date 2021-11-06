@@ -248,13 +248,32 @@ function hideMap(mapId){
 }
 
 function showCompareTool() {
+    copyZoomFromTo(soloMap, beforeMap);
+    copyCoordsFromTo(soloMap, beforeMap);
     showMap('comparison-map-container');
     hideMap('solo-map-container');
 }
 
 function showSoloMap() {
+    copyZoomFromTo(beforeMap, soloMap);
+    copyCoordsFromTo(beforeMap, soloMap);
     showMap('solo-map-container');
     hideMap('comparison-map-container');
+}
+
+function copyZoomFromTo(sourceMap, destinationMap){
+    let zoom = sourceMap.getZoom();
+
+    destinationMap.setZoom(zoom);
+}
+
+function copyCoordsFromTo(sourceMap, destinationMap){
+    let coords = sourceMap.getCenter()
+
+    destinationMap.jumpTo({
+        center: [coords.lng, coords.lat],
+        essential: true
+    });
 }
 
 function addButton(menu, id, text, callback, className=''){
