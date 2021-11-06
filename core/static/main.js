@@ -94,16 +94,6 @@ function setCityLocation() {
         center: [coordinates[0], coordinates[1]],
         essential: true
     });
-    // Find features intersecting the bounding box.
-    //console.log(beforeMap);
-    //const selectedFeatures = beforeMap.queryRenderedFeatures(options={
-    //layers: ['zrzutymerge-btmnix']
-    //});
-    //console.log(selectedFeatures);
-    //const fips = selectedFeatures.map(
-    //(feature) => feature.properties.Nazwa
-    //);
-    //console.log(fips);
 
 }
 document.getElementById("city-input").addEventListener("change", setCityLocation);
@@ -295,11 +285,10 @@ function addButton(menu, id, text, callback, className=''){
 }
 
 soloMap.on('load', () => {
-        const menu = document.getElementById('soloMapMenu');
+        let menu = document.getElementById('soloMapMenu');
         addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
-});
 
-soloMap.on('load', () => {
-        const menu = document.getElementById('comparisonMapMenu');
+        menu = document.getElementById('comparisonMapMenu');
         addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
 });
+
