@@ -4,6 +4,18 @@ const style2 = 'ckplemisi0egv17m4exbntnws';
 const center = {'lat': 21.01178, 'lon': 52.17}
 const zoomLevel = 12;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
+let addresses = [];
+let drops = [];
+let artillery = [];
+
+
+let hiddenMap = new mapboxgl.Map({
+    container: 'streets',
+    style: 'mapbox://styles/piotrwegrzyn/' + style1,
+    center: [center.lat, center.lon],
+    zoom: 1,
+
+});
 
 let beforeMap = new mapboxgl.Map({
     container: 'streets',
@@ -96,6 +108,7 @@ function setCityLocation() {
     });
 
 }
+document.getElementById("city-input").addEventListener("change", setCityLocation);
 document.getElementById("city-input").addEventListener("change", setCityLocation);
 
 function addKeyboardControl(map){
@@ -237,11 +250,24 @@ function hideMap(mapId){
     document.getElementById(mapId).classList.remove("h-100", "d-flex", "flex-column");
 }
 
+function displayClickedPoint() {
+    console.log(beforeMap)
+    let selectedFeatures = beforeMap.queryRenderedFeatures(options={
+        layers: ['adresy-kontaktowe-4jmjk0']
+    });
+    console.log(selectedFeatures);
+    const fips = selectedFeatures.map(
+        (feature) => feature.properties.Nazwa
+    );
+    console.log(fips);
+}
+
 function showCompareTool() {
     copyZoomFromTo(soloMap, beforeMap);
     copyCoordsFromTo(soloMap, beforeMap);
     showMap('comparison-map-container');
     hideMap('solo-map-container');
+    displayClickedPoint();
 }
 
 function showSoloMap() {
@@ -249,6 +275,7 @@ function showSoloMap() {
     copyCoordsFromTo(beforeMap, soloMap);
     showMap('solo-map-container');
     hideMap('comparison-map-container');
+    displayClickedPoint();
 }
 
 function copyZoomFromTo(sourceMap, destinationMap){
@@ -280,7 +307,6 @@ function addButton(menu, id, text, callback, className=''){
             callback();
         };
 
-
         menu.appendChild(link);
 }
 
@@ -290,5 +316,69 @@ soloMap.on('load', () => {
 
         menu = document.getElementById('comparisonMapMenu');
         addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
+        addHoverTooltip(beforeMap);
+        addHoverTooltip(soloMap);
 });
 
+function loadAddressOptions() {
+     let selectedFeatures = hiddenMap.queryRenderedFeatures(options={
+        layers: ['adresy-kontaktowe-4jmjk0']
+    });
+    let counter = 0;
+    addresses = selectedFeatures.map(
+        (feature) => {
+            props = feature.properties;
+
+            let address = {
+                id: counter,
+                label: props["Nazwa zrzu"],
+                pos: {
+                    lat: props.X,
+                    lon: props.Y
+                },
+                city: props.Miasto,
+                street: props.Ulica,
+                desc: props.Opis
+            }
+            counter++;
+
+            return address
+        }
+    );
+
+    console.log(selectedFeatures);
+    console.log(addresses);
+}
+
+hiddenMap.on('load', () => {
+    loadAddressOptions();
+
+});
+
+function addHoverTooltip(map){
+
+map.on('click', 'adresy-kontaktowe-4jmjk0', (e) => {
+    map.flyTo({
+    center: e.features[0].geometry.coordinates
+    });
+});
+
+// Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+map.on('mouseenter', 'adresy-kontaktowe-4jmjk0', () => {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'adresy-kontaktowe-4jmjk0', () => {
+    map.getCanvas().style.cursor = '';
+});
+    map.on('mousemove', (e) => {
+        const addreses = map.queryRenderedFeatures(e.point, {
+            layers: ['adresy-kontaktowe-4jmjk0']
+        });
+
+        if(addreses.length){
+           console.log(e.point);
+        }
+    });
+}
