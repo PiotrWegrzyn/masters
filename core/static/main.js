@@ -7,10 +7,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUyb
 let addresses = [];
 let drops = [];
 let artillery = [];
+let measureTool = false;
 
 
 let hiddenMap = new mapboxgl.Map({
-    container: 'streets',
+    container: 'hiddenMap',
     style: 'mapbox://styles/piotrwegrzyn/' + style1,
     center: [center.lat, center.lon],
     zoom: 1,
@@ -61,7 +62,7 @@ let map = new mapboxgl.Compare(
     container,
 );
 
-const distanceContainer = document.getElementById('distance');
+let distanceContainer = document.getElementById('distanceSolo');
 
 // GeoJSON object to hold our measurement features
 const geojson = {
@@ -88,10 +89,10 @@ beforeMap.on('load', () => {
     soloMap.addControl(new mapboxgl.NavigationControl());
 
     addKeyboardControl(afterMap);
-    addMeasurePoints(beforeMap);
+    addMeasurePointsFunctionality(beforeMap);
 
     addKeyboardControl(soloMap);
-    addMeasurePoints(soloMap);
+    addMeasurePointsFunctionality(soloMap);
 
     hideMap('comparison-map-container');
     // hideMap('solo-map-container');
@@ -151,7 +152,7 @@ function addKeyboardControl(map){
     );
 }
 
-function addMeasurePoints(map){
+function addMeasurePointsFunctionality(map){
     map.addSource('geojson', {
         'type': 'geojson',
         'data': geojson
@@ -185,60 +186,67 @@ function addMeasurePoints(map){
 
 
     map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-            layers: ['measure-points']
-        });
+        if(measureTool){
+            const features = map.queryRenderedFeatures(e.point, {
+                layers: ['measure-points']
+            });
 
-        // Remove the linestring from the group
-        // so we can redraw it based on the points collection.
-        if (geojson.features.length > 1) geojson.features.pop();
+            // Remove the linestring from the group
+            // so we can redraw it based on the points collection.
+            if (geojson.features.length > 1) geojson.features.pop();
 
-        // Clear the distance container to populate it with a new value.
-        distanceContainer.innerHTML = '';
+            // Clear the distance container to populate it with a new value.
+            distanceContainer.innerHTML = '';
 
-        // If a feature was clicked, remove it from the map.
-        if (features.length) {
-            const id = features[0].properties.id;
-            geojson.features = geojson.features.filter((point) => point.properties.id !== id);
-        } else {
-            const point = {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [e.lngLat.lng, e.lngLat.lat]
-                },
-                'properties': {
-                    'id': String(new Date().getTime())
-                }
-            };
+            // If a feature was clicked, remove it from the map.
+            if (features.length) {
+                const id = features[0].properties.id;
+                geojson.features = geojson.features.filter((point) => point.properties.id !== id);
+            } else {
+                const point = {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [e.lngLat.lng, e.lngLat.lat]
+                    },
+                    'properties': {
+                        'id': String(new Date().getTime())
+                    }
+                };
 
-            geojson.features.push(point);
+                geojson.features.push(point);
+            }
+
+            if (geojson.features.length > 1) {
+                linestring.geometry.coordinates = geojson.features.map(
+                    (point) => point.geometry.coordinates
+                );
+
+                geojson.features.push(linestring);
+
+                // Populate the distanceContainer with total distance
+                const value = document.createElement('pre');
+                const distance = turf.length(linestring);
+                value.textContent = `Total distance: ${distance.toLocaleString()}km`;
+                distanceContainer.appendChild(value);
+            }
+                map.getSource('geojson').setData(geojson);
         }
 
-        if (geojson.features.length > 1) {
-            linestring.geometry.coordinates = geojson.features.map(
-                (point) => point.geometry.coordinates
-            );
-
-            geojson.features.push(linestring);
-
-            // Populate the distanceContainer with total distance
-            const value = document.createElement('pre');
-            const distance = turf.length(linestring);
-            value.textContent = `Total distance: ${distance.toLocaleString()}km`;
-            distanceContainer.appendChild(value);
-        }
-
-        map.getSource('geojson').setData(geojson);
     });
 
     map.on('mousemove', (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-            layers: ['measure-points']
-        });
-        // Change the cursor to a pointer when hovering over a point on the map.
-        // Otherwise cursor is a crosshair.
-        map.getCanvas().style.cursor = features.length ? 'pointer': 'crosshair';
+        if(measureTool){
+            const features = map.queryRenderedFeatures(e.point, {
+                layers: ['measure-points']
+            });
+            // Change the cursor to a pointer when hovering over a point on the map.
+            // Otherwise cursor is a crosshair.
+            map.getCanvas().style.cursor = features.length ? 'pointer': 'crosshair';
+        }
+        else {
+            map.getCanvas().style.cursor = '';
+        }
     });
 }
 
@@ -262,12 +270,21 @@ function displayClickedPoint() {
     console.log(fips);
 }
 
+function clearMeasurePoints() {
+    geojson.features = [];
+    distanceContainer.innerHTML = '';
+    soloMap.getSource('geojson').setData(geojson);
+    beforeMap.getSource('geojson').setData(geojson);
+}
+
 function showCompareTool() {
     copyZoomFromTo(soloMap, beforeMap);
     copyCoordsFromTo(soloMap, beforeMap);
     showMap('comparison-map-container');
     hideMap('solo-map-container');
     displayClickedPoint();
+    clearMeasurePoints();
+    distanceContainer = document.getElementById('distanceCompare');
 }
 
 function showSoloMap() {
@@ -276,6 +293,19 @@ function showSoloMap() {
     showMap('solo-map-container');
     hideMap('comparison-map-container');
     displayClickedPoint();
+    clearMeasurePoints();
+    distanceContainer = document.getElementById('distanceSolo');
+}
+
+function toggleMeasure() {
+    measureTool = !measureTool;
+    clearMeasurePoints();
+    let measureBtns = document.getElementsByClassName('measureBtn');
+       for (let item of measureBtns) {
+        item.classList.remove([!measureTool ? "green": "gray"]);
+        item.classList.add([measureTool ? "green": "gray"]);
+        item.textContent = "Measure Tool " + (measureTool ? "ON": "OFF");
+    }
 }
 
 function copyZoomFromTo(sourceMap, destinationMap){
@@ -313,9 +343,11 @@ function addButton(menu, id, text, callback, className=''){
 soloMap.on('load', () => {
         let menu = document.getElementById('soloMapMenu');
         addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
+        addButton(menu, '', 'Measure Tool OFF', toggleMeasure, 'gray measureBtn')
 
         menu = document.getElementById('comparisonMapMenu');
         addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
+        addButton(menu, '', 'Measure Tool OFF', toggleMeasure, 'gray measureBtn')
         addHoverTooltip(beforeMap);
         addHoverTooltip(soloMap);
 });
@@ -357,28 +389,28 @@ hiddenMap.on('load', () => {
 
 function addHoverTooltip(map){
 
-map.on('click', 'adresy-kontaktowe-4jmjk0', (e) => {
-    map.flyTo({
-    center: e.features[0].geometry.coordinates
-    });
-});
-
-// Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-map.on('mouseenter', 'adresy-kontaktowe-4jmjk0', () => {
-    map.getCanvas().style.cursor = 'pointer';
-});
-
-// Change it back to a pointer when it leaves.
-map.on('mouseleave', 'adresy-kontaktowe-4jmjk0', () => {
-    map.getCanvas().style.cursor = '';
-});
-    map.on('mousemove', (e) => {
-        const addreses = map.queryRenderedFeatures(e.point, {
-            layers: ['adresy-kontaktowe-4jmjk0']
+    map.on('click', 'adresy-kontaktowe-4jmjk0', (e) => {
+        map.flyTo({
+        center: e.features[0].geometry.coordinates
         });
-
-        if(addreses.length){
-           console.log(e.point);
-        }
     });
+
+    // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+    map.on('mouseenter', 'adresy-kontaktowe-4jmjk0', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'adresy-kontaktowe-4jmjk0', () => {
+        map.getCanvas().style.cursor = '';
+    });
+        map.on('mousemove', (e) => {
+            const addreses = map.queryRenderedFeatures(e.point, {
+                layers: ['adresy-kontaktowe-4jmjk0']
+            });
+
+            if(addreses.length){
+               console.log(e.point);
+            }
+        });
 }
