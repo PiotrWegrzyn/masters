@@ -235,19 +235,16 @@ function addMeasurePointsFunctionality(map){
 
     });
 
-    map.on('mousemove', (e) => {
-        if(measureTool){
-            const features = map.queryRenderedFeatures(e.point, {
-                layers: ['measure-points']
-            });
-            // Change the cursor to a pointer when hovering over a point on the map.
-            // Otherwise cursor is a crosshair.
-            map.getCanvas().style.cursor = features.length ? 'pointer': 'crosshair';
-        }
-        else {
-            map.getCanvas().style.cursor = '';
-        }
+    // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+    map.on('mousemove', 'measure-points', () => {
+        map.getCanvas().style.cursor = 'pointer';
     });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'measure-points', () => {
+        map.getCanvas().style.cursor = '';
+    });
+
 }
 
 function showMap(mapId){
@@ -396,7 +393,7 @@ function addHoverTooltip(map){
     });
 
     // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-    map.on('mouseenter', 'adresy-kontaktowe-4jmjk0', () => {
+    map.on('mousemove', 'adresy-kontaktowe-4jmjk0', () => {
         map.getCanvas().style.cursor = 'pointer';
     });
 
@@ -404,13 +401,4 @@ function addHoverTooltip(map){
     map.on('mouseleave', 'adresy-kontaktowe-4jmjk0', () => {
         map.getCanvas().style.cursor = '';
     });
-        map.on('mousemove', (e) => {
-            const addreses = map.queryRenderedFeatures(e.point, {
-                layers: ['adresy-kontaktowe-4jmjk0']
-            });
-
-            if(addreses.length){
-               console.log(e.point);
-            }
-        });
 }
