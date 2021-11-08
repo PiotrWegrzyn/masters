@@ -1,7 +1,7 @@
 const oldstyle = 'cknycny9p1m6l17np8zp5s27p';
 const style1 = 'ckuo3i3hq301118kfy3ve5nfq';
 const style2 = 'ckplemisi0egv17m4exbntnws';
-const center = {'lat': 21.01178, 'lon': 52.17}
+const center = {'lat': 21.01178, 'lon': 52.22}
 const zoomLevel = 12;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
 let addresses = [];
