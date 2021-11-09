@@ -8,6 +8,9 @@ let addresses = [];
 let drops = [];
 let artillery = [];
 let measureTool = false;
+ADDRESS_LAYER = 'adresy-kontaktowe-4jmjk0';
+LANDINGS_LAYER = 'zrzutymerge-btmnix';
+ARTILLERY_LAYER = 'artmerged-5c2el3';
 
 
 let hiddenMap = new mapboxgl.Map({
@@ -234,17 +237,7 @@ function addMeasurePointsFunctionality(map){
         }
 
     });
-
-    // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-    map.on('mousemove', 'measure-points', () => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'measure-points', () => {
-        map.getCanvas().style.cursor = '';
-    });
-
+    addMousePointer(map, 'measure-points');
 }
 
 function showMap(mapId){
@@ -258,7 +251,7 @@ function hideMap(mapId){
 function displayClickedPoint() {
     console.log(beforeMap)
     let selectedFeatures = beforeMap.queryRenderedFeatures(options={
-        layers: ['adresy-kontaktowe-4jmjk0']
+        layers: [ADDRESS_LAYER]
     });
     console.log(selectedFeatures);
     const fips = selectedFeatures.map(
@@ -345,13 +338,13 @@ soloMap.on('load', () => {
         menu = document.getElementById('comparisonMapMenu');
         addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
         addButton(menu, '', 'Measure Tool OFF', toggleMeasure, 'gray measureBtn')
-        addHoverTooltip(beforeMap);
-        addHoverTooltip(soloMap);
+        addFeatureTooltips(beforeMap);
+        addFeatureTooltips(soloMap);
 });
 
 function loadAddressOptions() {
      let selectedFeatures = hiddenMap.queryRenderedFeatures(options={
-        layers: ['adresy-kontaktowe-4jmjk0']
+        layers: [ADDRESS_LAYER]
     });
     let counter = 0;
     addresses = selectedFeatures.map(
@@ -381,24 +374,44 @@ function loadAddressOptions() {
 
 hiddenMap.on('load', () => {
     loadAddressOptions();
-
 });
 
-function addHoverTooltip(map){
-
-    map.on('click', 'adresy-kontaktowe-4jmjk0', (e) => {
+function addPointTooltipListener(map, TooltipFactoryClass, layer) {
+    map.on('click', layer, (point) => {
+        let factory = new TooltipFactoryClass();
+        addTooltipToMap(map, factory, point)
         map.flyTo({
-        center: e.features[0].geometry.coordinates
+                center: point.features[0].geometry.coordinates
         });
     });
+}
 
+function addFeatureTooltips(map){
+
+    addPointTooltipListener(map, AddressTooltipFactory, ADDRESS_LAYER);
+    addMousePointer(map, ADDRESS_LAYER);
+
+    addPointTooltipListener(map, LandingTooltipFactory, LANDINGS_LAYER);
+    addMousePointer(map, LANDINGS_LAYER);
+
+    addPointTooltipListener(map, ArtilleryTooltipFactory, ARTILLERY_LAYER);
+    addMousePointer(map, ARTILLERY_LAYER);
+}
+
+function addMousePointer(map, layer){
     // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-    map.on('mousemove', 'adresy-kontaktowe-4jmjk0', () => {
+    map.on('mousemove', layer , () => {
         map.getCanvas().style.cursor = 'pointer';
     });
 
     // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'adresy-kontaktowe-4jmjk0', () => {
+    map.on('mouseleave', layer, () => {
         map.getCanvas().style.cursor = '';
     });
+}
+
+function addTooltipToMap(map, tooltipFactory, point){
+    let pointData = point.features[0];
+    let tooltip = tooltipFactory.createTooltip(pointData);
+    tooltip.addTo(map);
 }
