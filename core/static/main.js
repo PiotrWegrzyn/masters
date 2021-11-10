@@ -5,7 +5,7 @@ const center = {'lat': 21.01178, 'lon': 52.22}
 const zoomLevel = 12;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
 let addresses = [];
-let drops = [];
+let landings = [];
 let artillery = [];
 ADDRESS_LAYER = 'adresy-kontaktowe-4jmjk0';
 LANDINGS_LAYER = 'zrzutymerge-btmnix';
@@ -175,9 +175,8 @@ soloMap.on('load', () => {
 });
 
 function loadAddressOptions() {
-    let features = getFeatures(ADDRESS_LAYER);
     let counter = 0;
-    addresses = features.map(
+    addresses = addresses.map(
         (feature) => {
             let props = feature.properties;
 
@@ -198,11 +197,13 @@ function loadAddressOptions() {
         }
     );
 
-    console.log(features);
     console.log(addresses);
 }
 
 hiddenMap.on('load', () => {
+    artillery = getFeatures(ARTILLERY_LAYER);
+    addresses = getFeatures(ARTILLERY_LAYER);
+    landings = getFeatures(ARTILLERY_LAYER);
     loadAddressOptions();
 });
 
