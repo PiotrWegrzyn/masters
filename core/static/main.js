@@ -198,7 +198,7 @@ function loadAddressOptions() {
         }
     );
 
-    console.log(selectedFeatures);
+    console.log(features);
     console.log(addresses);
 }
 
