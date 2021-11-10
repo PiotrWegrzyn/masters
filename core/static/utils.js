@@ -12,3 +12,15 @@ function getFeatures(layer){
         layers: [layer]
     });
 }
+
+function addMousePointer(map, layer){
+    // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
+    map.on('mousemove', layer , () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', layer, () => {
+        map.getCanvas().style.cursor = '';
+    });
+}

@@ -7,7 +7,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUyb
 let addresses = [];
 let drops = [];
 let artillery = [];
-let measureTool = false;
 ADDRESS_LAYER = 'adresy-kontaktowe-4jmjk0';
 LANDINGS_LAYER = 'zrzutymerge-btmnix';
 ARTILLERY_LAYER = 'artmerged-5c2el3';
@@ -65,22 +64,6 @@ let map = new mapboxgl.Compare(
     container,
 );
 
-let distanceContainer = document.getElementById('distanceSolo');
-
-// GeoJSON object to hold our measurement features
-const geojson = {
-    'type': 'FeatureCollection',
-    'features': []
-};
-
-// Used to draw a line between points
-const linestring = {
-    'type': 'Feature',
-    'geometry': {
-        'type': 'LineString',
-        'coordinates': []
-    }
-};
 
 
 beforeMap.on('load', () => {
@@ -89,10 +72,10 @@ beforeMap.on('load', () => {
     soloMap.addControl(new mapboxgl.NavigationControl());
 
     KeyboardControls.attach(afterMap);
-    addMeasurePointsFunctionality(beforeMap);
+    DistanceCalculator.attach(beforeMap);
 
     KeyboardControls.attach(soloMap);
-    addMeasurePointsFunctionality(soloMap);
+    DistanceCalculator.attach(soloMap);
 
     hideMap('comparison-map-container');
     // hideMap('solo-map-container');
@@ -112,91 +95,6 @@ function setCityLocation() {
 document.getElementById("city-input").addEventListener("change", setCityLocation);
 document.getElementById("city-input").addEventListener("change", setCityLocation);
 
-function addMeasurePointsFunctionality(map){
-    map.addSource('geojson', {
-        'type': 'geojson',
-        'data': geojson
-    });
-
-    // Add styles to the beforeMap
-    map.addLayer({
-        id: 'measure-points',
-        type: 'circle',
-        source: 'geojson',
-        paint: {
-            'circle-radius': 5,
-            'circle-color': '#000'
-        },
-        filter: ['in', '$type', 'Point']
-    });
-    map.addLayer({
-        id: 'measure-lines',
-        type: 'line',
-        source: 'geojson',
-        layout: {
-            'line-cap': 'round',
-            'line-join': 'round'
-        },
-        paint: {
-            'line-color': '#000',
-            'line-width': 2.5
-        },
-        filter: ['in', '$type', 'LineString']
-    });
-
-
-    map.on('click', (e) => {
-        if(measureTool){
-            const features = map.queryRenderedFeatures(e.point, {
-                layers: ['measure-points']
-            });
-
-            // Remove the linestring from the group
-            // so we can redraw it based on the points collection.
-            if (geojson.features.length > 1) geojson.features.pop();
-
-            // Clear the distance container to populate it with a new value.
-            distanceContainer.innerHTML = '';
-
-            // If a feature was clicked, remove it from the map.
-            if (features.length) {
-                const id = features[0].properties.id;
-                geojson.features = geojson.features.filter((point) => point.properties.id !== id);
-            } else {
-                const point = {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': [e.lngLat.lng, e.lngLat.lat]
-                    },
-                    'properties': {
-                        'id': String(new Date().getTime())
-                    }
-                };
-
-                geojson.features.push(point);
-            }
-
-            if (geojson.features.length > 1) {
-                linestring.geometry.coordinates = geojson.features.map(
-                    (point) => point.geometry.coordinates
-                );
-
-                geojson.features.push(linestring);
-
-                // Populate the distanceContainer with total distance
-                const value = document.createElement('pre');
-                const distance = turf.length(linestring);
-                value.textContent = `Total distance: ${distance.toLocaleString()}km`;
-                distanceContainer.appendChild(value);
-            }
-                map.getSource('geojson').setData(geojson);
-        }
-
-    });
-    addMousePointer(map, 'measure-points');
-}
-
 
 function displayClickedPoint() {
     console.log(beforeMap)
@@ -210,12 +108,6 @@ function displayClickedPoint() {
     console.log(fips);
 }
 
-function clearMeasurePoints() {
-    geojson.features = [];
-    distanceContainer.innerHTML = '';
-    soloMap.getSource('geojson').setData(geojson);
-    beforeMap.getSource('geojson').setData(geojson);
-}
 
 function showCompareTool() {
     copyZoomFromTo(soloMap, beforeMap);
@@ -223,7 +115,7 @@ function showCompareTool() {
     showMap('comparison-map-container');
     hideMap('solo-map-container');
     displayClickedPoint();
-    clearMeasurePoints();
+    DistanceCalculator.clear();
     distanceContainer = document.getElementById('distanceCompare');
 }
 
@@ -233,20 +125,10 @@ function showSoloMap() {
     showMap('solo-map-container');
     hideMap('comparison-map-container');
     displayClickedPoint();
-    clearMeasurePoints();
+    DistanceCalculator.clear();
     distanceContainer = document.getElementById('distanceSolo');
 }
 
-function toggleMeasure() {
-    measureTool = !measureTool;
-    clearMeasurePoints();
-    let measureBtns = document.getElementsByClassName('measureBtn');
-       for (let item of measureBtns) {
-        item.classList.remove([!measureTool ? "green": "gray"]);
-        item.classList.add([measureTool ? "green": "gray"]);
-        item.textContent = "Measure Tool " + (measureTool ? "ON": "OFF");
-    }
-}
 
 function copyZoomFromTo(sourceMap, destinationMap){
     let zoom = sourceMap.getZoom();
@@ -283,11 +165,11 @@ function addButton(menu, id, text, callback, className=''){
 soloMap.on('load', () => {
         let menu = document.getElementById('soloMapMenu');
         addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
-        addButton(menu, '', 'Measure Tool OFF', toggleMeasure, 'gray measureBtn')
+        addButton(menu, '', 'Measure Tool OFF', DistanceCalculator.toggle, 'gray measureBtn')
 
         menu = document.getElementById('comparisonMapMenu');
         addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
-        addButton(menu, '', 'Measure Tool OFF', toggleMeasure, 'gray measureBtn')
+        addButton(menu, '', 'Measure Tool OFF', DistanceCalculator.toggle, 'gray measureBtn')
         addFeatureTooltips(beforeMap);
         addFeatureTooltips(soloMap);
 });
@@ -346,17 +228,6 @@ function addFeatureTooltips(map){
     addMousePointer(map, ARTILLERY_LAYER);
 }
 
-function addMousePointer(map, layer){
-    // Change the cursor to a pointer when the it enters a feature in the 'circle' layer.
-    map.on('mousemove', layer , () => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    // Change it back to a pointer when it leaves.
-    map.on('mouseleave', layer, () => {
-        map.getCanvas().style.cursor = '';
-    });
-}
 
 function addTooltipToMap(map, tooltipFactory, point){
     let pointData = point.features[0];
