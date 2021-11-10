@@ -82,8 +82,10 @@ const linestring = {
     }
 };
 
-function easing(t) {
-    return t * (2 - t);
+function getFeatures(layer){
+     return hiddenMap.queryRenderedFeatures(options={
+        layers: [layer]
+    });
 }
 
 beforeMap.on('load', () => {
@@ -91,10 +93,10 @@ beforeMap.on('load', () => {
     afterMap.addControl(new mapboxgl.NavigationControl());
     soloMap.addControl(new mapboxgl.NavigationControl());
 
-    addKeyboardControl(afterMap);
+    KeyboardControls.attach(afterMap);
     addMeasurePointsFunctionality(beforeMap);
 
-    addKeyboardControl(soloMap);
+    KeyboardControls.attach(soloMap);
     addMeasurePointsFunctionality(soloMap);
 
     hideMap('comparison-map-container');
@@ -114,46 +116,6 @@ function setCityLocation() {
 }
 document.getElementById("city-input").addEventListener("change", setCityLocation);
 document.getElementById("city-input").addEventListener("change", setCityLocation);
-
-function addKeyboardControl(map){
-    const deltaDistance = 100;
-
-    // degrees the map rotates when the left or right arrow is clicked
-    const deltaDegrees = 25;
-
-    map.getCanvas().focus();
-
-    map.getCanvas().addEventListener(
-        'keydown',
-        (e) => {
-            e.preventDefault();
-            if (e.which === 38) {
-                // up
-                map.panBy([0, -deltaDistance], {
-                    easing: easing
-                });
-            } else if (e.which === 40) {
-                // down
-                map.panBy([0, deltaDistance], {
-                    easing: easing
-                });
-            } else if (e.which === 37) {
-                // left
-                map.easeTo({
-                    bearing: map.getBearing() - deltaDegrees,
-                    easing: easing
-                });
-            } else if (e.which === 39) {
-                // right
-                map.easeTo({
-                    bearing: map.getBearing() + deltaDegrees,
-                    easing: easing
-                });
-            }
-        },
-        true
-    );
-}
 
 function addMeasurePointsFunctionality(map){
     map.addSource('geojson', {
@@ -343,13 +305,11 @@ soloMap.on('load', () => {
 });
 
 function loadAddressOptions() {
-     let selectedFeatures = hiddenMap.queryRenderedFeatures(options={
-        layers: [ADDRESS_LAYER]
-    });
+    let features = getFeatures(ADDRESS_LAYER);
     let counter = 0;
-    addresses = selectedFeatures.map(
+    addresses = features.map(
         (feature) => {
-            props = feature.properties;
+            let props = feature.properties;
 
             let address = {
                 id: counter,
