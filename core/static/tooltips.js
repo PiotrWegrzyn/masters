@@ -17,11 +17,21 @@ class TooltipFactory {
   formatData(data){
     return JSON.stringify(data, null, '<br>').slice(1,-1).replaceAll('"', "");
   }
+
+  filterData(data){
+      const clonedData = JSON.parse(JSON.stringify(data));
+      delete clonedData['path']
+      delete clonedData['Id']
+      delete clonedData['layer']
+      delete clonedData['ID pliku']
+    return clonedData
+  }
 }
 
 class AddressTooltipFactory extends TooltipFactory{
   createHtml(data){
-      let cleanedData = this.stripEmptyData(data);
+      let filteredData = this.filterData(data);
+      let cleanedData = this.stripEmptyData(filteredData);
       let prettyData = this.formatData(cleanedData);
       let html = `<strong>${data["Nazwa zrzutu"] || ""} ${data["Ulica"] || ""} ${data["Miasto"] || ""} </strong><p>${prettyData}</p>`;
 
@@ -31,7 +41,8 @@ class AddressTooltipFactory extends TooltipFactory{
 
 class ArtilleryTooltipFactory extends TooltipFactory{
   createHtml(data){
-      let cleanedData = this.stripEmptyData(data);
+      let filteredData = this.filterData(data);
+      let cleanedData = this.stripEmptyData(filteredData);
       let prettyData = this.formatData(cleanedData);
       let html = `<strong>${data["Nazwa zrzutu"] || ""} ${data["Ulica"] || ""} ${data["Miasto"] || ""} </strong><p>${prettyData}</p>`;
 
@@ -41,9 +52,10 @@ class ArtilleryTooltipFactory extends TooltipFactory{
 
 class LandingTooltipFactory extends TooltipFactory{
   createHtml(data){
-      let cleanedData = this.stripEmptyData(data);
+      let filteredData = this.filterData(data);
+      let cleanedData = this.stripEmptyData(filteredData);
       let prettyData = this.formatData(cleanedData);
-      let html = `<strong>${data["Nazwa zrzutu"] || ""} ${data["Ulica"] || ""} ${data["Miasto"] || ""} </strong><p>${prettyData}</p>`;
+      let html = `<strong>Miejsce zrzutu ${data["Nazwa zrzutu"] || ""} ${data["layer"] || ""}</strong><p>${prettyData}</p>`;
 
       return html;
   }
