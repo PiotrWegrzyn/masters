@@ -111,7 +111,7 @@ class DistanceCalculator{
 
     static toggle() {
         measureTool = !measureTool;
-        this.clear();
+        DistanceCalculator.clear();
         let measureBtns = document.getElementsByClassName('measureBtn');
            for (let item of measureBtns) {
             item.classList.remove([!measureTool ? "green": "gray"]);

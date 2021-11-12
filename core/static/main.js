@@ -7,9 +7,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUyb
 let addresses = [];
 let landings = [];
 let artillery = [];
-ADDRESS_LAYER = 'adresy-kontaktowe-4jmjk0';
-LANDINGS_LAYER = 'zrzutymerge-btmnix';
-ARTILLERY_LAYER = 'artmerged-5c2el3';
 
 
 let hiddenMap = new mapboxgl.Map({
@@ -172,39 +169,14 @@ soloMap.on('load', () => {
         addButton(menu, '', 'Measure Tool OFF', DistanceCalculator.toggle, 'gray measureBtn')
         addFeatureTooltips(beforeMap);
         addFeatureTooltips(soloMap);
+        testSearch(soloMap);
 });
 
-function loadAddressOptions() {
-    let counter = 0;
-    addresses = addresses.map(
-        (feature) => {
-            let props = feature.properties;
-
-            let address = {
-                id: counter,
-                label: props["Nazwa zrzu"],
-                pos: {
-                    lat: props.X,
-                    lon: props.Y
-                },
-                city: props.Miasto,
-                street: props.Ulica,
-                desc: props.Opis
-            }
-            counter++;
-
-            return address
-        }
-    );
-
-    console.log(addresses);
-}
 
 hiddenMap.on('load', () => {
     artillery = getFeatures(ARTILLERY_LAYER);
     addresses = getFeatures(ARTILLERY_LAYER);
     landings = getFeatures(ARTILLERY_LAYER);
-    loadAddressOptions();
 });
 
 function addPointTooltipListener(map, TooltipFactoryClass, layer) {

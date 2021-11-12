@@ -1,7 +1,8 @@
 class TooltipFactory {
-  createTooltip(pointData){
-      return new mapboxgl.Popup()
-        .setLngLat(pointData.geometry.coordinates)
+  createTooltip(pointData, closeButton=true){
+      let geometry = pointData.geometry || pointData._geometry;
+      return new mapboxgl.Popup({closeButton: closeButton})
+        .setLngLat(geometry.coordinates)
         .setHTML(this.createHtml(pointData.properties));
   }
 

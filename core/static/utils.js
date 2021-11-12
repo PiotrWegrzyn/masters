@@ -1,3 +1,6 @@
+ADDRESS_LAYER = 'adresy-kontaktowe-4jmjk0';
+LANDINGS_LAYER = 'zrzutymerge-btmnix';
+ARTILLERY_LAYER = 'artmerged-5c2el3';
 
 function showMap(mapId){
     document.getElementById(mapId).classList.add("h-100", "d-flex", "flex-column");

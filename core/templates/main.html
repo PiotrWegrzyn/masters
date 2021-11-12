@@ -30,6 +30,7 @@
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
         <link rel="stylesheet" href="{% static "main.css" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static "search.css" %}" type="text/css"/>
     </head>
     <body>
         <div class="main-container">
@@ -83,6 +84,12 @@
                 <nav id="soloMapMenu" class="menu"></nav>
                 <div id="distanceSolo" class="distance-container"></div>
                 <div id="historicSolo" class="map"></div>
+            </div>
+            <div class="map-overlay">
+                <fieldset>
+                <input id="feature-filter" type="text" placeholder="Filter results by name">
+                </fieldset>
+                <div id="feature-listing" class="listing"></div>
             </div>
 
             <div id="comparison-map-container" class="map-container h-100 d-flex flex-column" style="display: none">
