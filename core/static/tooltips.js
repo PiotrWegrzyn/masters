@@ -55,7 +55,7 @@ class LandingTooltipFactory extends TooltipFactory{
       let filteredData = this.filterData(data);
       let cleanedData = this.stripEmptyData(filteredData);
       let prettyData = this.formatData(cleanedData);
-      let html = `<strong>Miejsce zrzutu ${data["Nazwa zrzutu"] || ""} ${data["layer"] || ""}</strong><p>${prettyData}</p>`;
+      let html = `<strong>Miejsce zrzutu ${data["Nazwa"] || data["layer"]}</strong><p>${prettyData}</p>`;
 
       return html;
   }
