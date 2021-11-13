@@ -62,21 +62,12 @@ let map = new mapboxgl.Compare(
 );
 
 
+function initializeControls(map) {
+    KeyboardControls.attach(map);
+    DistanceCalculator.attach(map);
 
-beforeMap.on('load', () => {
-
-    afterMap.addControl(new mapboxgl.NavigationControl());
-    soloMap.addControl(new mapboxgl.NavigationControl());
-
-    KeyboardControls.attach(afterMap);
-    DistanceCalculator.attach(beforeMap);
-
-    KeyboardControls.attach(soloMap);
-    DistanceCalculator.attach(soloMap);
-
-    hideMap('comparison-map-container');
-    soloMap.addControl(new mapboxgl.FullscreenControl());    // hideMap('solo-map-container');
-    soloMap.addControl(new mapboxgl.GeolocateControl({
+    map.addControl(new mapboxgl.FullscreenControl());    // hideMap('solo-map-container');
+    map.addControl(new mapboxgl.GeolocateControl({
             positionOptions: {
                 enableHighAccuracy: true
             },
@@ -90,9 +81,36 @@ beforeMap.on('load', () => {
         maxWidth: 80,
         unit: 'metric'
     });
-    soloMap.addControl(scale);
+    map.addControl(scale);
 
+    const measureControl = new MapboxGLButtonControl({
+                                className: "mapbox-gl-draw_polygon",
+                                title: "Measure tool",
+                                eventHandler: DistanceCalculator.toggle
+                            });
+    map.addControl(measureControl)
+}
 
+soloMap.on('load', () => {
+        let menu = document.getElementById('soloMapMenu');
+        addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
+
+        initializeControls(soloMap);
+        addFeatureTooltips(soloMap);
+        testSearch(soloMap);
+});
+
+beforeMap.on('load', () => {
+    hideMap('comparison-map-container');
+
+    initializeControls(beforeMap);
+    addFeatureTooltips(beforeMap);
+
+    afterMap.addControl(new mapboxgl.NavigationControl());
+    soloMap.addControl(new mapboxgl.NavigationControl());
+
+    let menu = document.getElementById('comparisonMapMenu');
+    addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
 
 });
 
@@ -175,20 +193,6 @@ function addButton(menu, id, text, callback, className=''){
 
         menu.appendChild(link);
 }
-
-soloMap.on('load', () => {
-        let menu = document.getElementById('soloMapMenu');
-        addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
-        addButton(menu, '', 'Measure Tool OFF', DistanceCalculator.toggle, 'gray measureBtn')
-
-        menu = document.getElementById('comparisonMapMenu');
-        addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
-        addButton(menu, '', 'Measure Tool OFF', DistanceCalculator.toggle, 'gray measureBtn')
-        addFeatureTooltips(beforeMap);
-        addFeatureTooltips(soloMap);
-        testSearch(soloMap);
-});
-
 
 hiddenMap.on('load', () => {
     artillery = getFeatures(ARTILLERY_LAYER);

@@ -112,12 +112,6 @@ class DistanceCalculator{
     static toggle() {
         measureTool = !measureTool;
         DistanceCalculator.clear();
-        let measureBtns = document.getElementsByClassName('measureBtn');
-           for (let item of measureBtns) {
-            item.classList.remove([!measureTool ? "green": "gray"]);
-            item.classList.add([measureTool ? "green": "gray"]);
-            item.textContent = "Measure Tool " + (measureTool ? "ON": "OFF");
-        }
     }
 }
 
