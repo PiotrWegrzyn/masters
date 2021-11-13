@@ -1,13 +1,29 @@
 .map-overlay {
-    position: absolute;
-    width: 0%;
-    top: 0px;
-    bottom: 0;
-    left: 0;
+    width: 100%;
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    background-color: #efefef;
     max-height: 100%;
     overflow: hidden;
+}
+
+#searchCarusel{
+    padding: 10px;
+    background: #88888f !important;
+}
+
+.caruselSearchIcon{
+    margin: 12px;
+}
+
+.alert-purple{
+    background: #563d7c;
+}
+
+
+#feature-filter{
+    margin: 10px;
+    padding: 20px;
+    padding-left: 40px;
+    width: 90%;
 }
 
 .map-overlay fieldset {
@@ -50,4 +66,14 @@
 
 .map-overlay .listing a:hover {
     background: #f0f0f0;
+}
+
+.carousel-item{
+    height: 100vh;
+}
+
+.carousel-indicators li {
+    width: auto;
+    height: auto;
+    text-indent: unset;
 }

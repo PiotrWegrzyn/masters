@@ -17,7 +17,9 @@ let testSearch = (map) => {
     });
 
     const filterEl = document.getElementById('feature-filter');
-    const listingEl = document.getElementById('feature-listing');
+    const listingEl = document.getElementById('address-listing');
+    const artListingEl = document.getElementById('artillery-listing');
+    const landingListingEl = document.getElementById('landing-listing');
 
     function renderListings(features) {
         const empty = document.createElement('p');
@@ -53,10 +55,6 @@ let testSearch = (map) => {
         } else {
             empty.textContent = 'Drag the map to populate results';
             listingEl.appendChild(empty);
-
-            // Hide the filter input
-            filterEl.parentNode.style.display = 'none';
-
         }
     }
 
