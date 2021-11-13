@@ -26,6 +26,8 @@ class Tooltip {
 
     filterData(data){
         const clonedData = JSON.parse(JSON.stringify(data));
+        clonedData['nazwa'] = clonedData['layer']
+
         delete clonedData['path']
         delete clonedData['Id']
         delete clonedData['layer']
