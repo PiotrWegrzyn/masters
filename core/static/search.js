@@ -1,6 +1,7 @@
 class SearchController{
 
     constructor(map) {
+        this.searchVisible = false;
         this.keyword = ""
         this.map = map
         this.filterEl = document.getElementById('feature-filter');
@@ -118,6 +119,12 @@ class SearchController{
                 return new LandingTooltip().createTitle(feature);
         }
     }
+
+    toggle = () => {
+        this.searchVisible = !searchController;
+    }
+
+    isVisible = () => this.searchVisible;
 
     static isMatch = (obj, value) => {
         return JSON.stringify(obj).slice(1,-1).replaceAll('"', "").normalize().toLowerCase().match(value.toLowerCase());

@@ -3,7 +3,6 @@ const style1 = 'ckuo3i3hq301118kfy3ve5nfq';
 const style2 = 'ckplemisi0egv17m4exbntnws';
 const center = {'lat': 21.01178, 'lon': 52.22}
 const zoomLevel = 12;
-let searchVisible = true;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
 let addresses = [];
 let landings = [];
@@ -144,8 +143,8 @@ function showSoloMap() {
 }
 
 function toggleSearchTool() {
-    searchVisible = !searchVisible;
-    $(".map-overlay").animate({width: searchVisible ? "100%": "0%"},{ duration: 300});
+    searchController.toggle();
+    $(".map-overlay").animate({width: searchController.isVisible() ? "100%": "0%"},{ duration: 300});
 }
 
 
