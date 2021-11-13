@@ -177,8 +177,8 @@ function showSoloMap() {
 }
 
 function toggleSearchTool() {
-    $(".map-overlay").animate({width: searchVisible ? "15%": "0%"},{ duration: 1500});
     searchVisible = !searchVisible;
+    $(".map-overlay").animate({width: searchVisible ? "15%": "0%"},{ duration: 690});
 }
 
 
