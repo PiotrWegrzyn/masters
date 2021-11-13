@@ -66,7 +66,8 @@ function initializeControls(map) {
     KeyboardControls.attach(map);
     DistanceCalculator.attach(map);
 
-    map.addControl(new mapboxgl.FullscreenControl());    // hideMap('solo-map-container');
+    map.addControl(new mapboxgl.NavigationControl());
+    map.addControl(new mapboxgl.FullscreenControl());
     map.addControl(new mapboxgl.GeolocateControl({
             positionOptions: {
                 enableHighAccuracy: true
@@ -76,38 +77,38 @@ function initializeControls(map) {
             // Draw an arrow next to the location dot to indicate which direction the device is heading.
             showUserHeading: true
             })
-    );   // hideMap('solo-map-container');
-    const scale = new mapboxgl.ScaleControl({
-        maxWidth: 80,
-        unit: 'metric'
-    });
-    map.addControl(scale);
+    );
+    map.addControl(new mapboxgl.ScaleControl({
+            maxWidth: 80,
+            unit: 'metric'
+        })
+    );
 
-    const measureControl = new MapboxGLButtonControl({
-                                className: "mapbox-gl-draw_polygon",
-                                title: "Measure tool",
-                                eventHandler: DistanceCalculator.toggle
-                            });
-    map.addControl(measureControl)
 }
 
 soloMap.on('load', () => {
+        hideMap('comparison-map-container');
+
         let menu = document.getElementById('soloMapMenu');
         addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
 
         initializeControls(soloMap);
         addFeatureTooltips(soloMap);
         testSearch(soloMap);
+
+        soloMap.addControl(new MapboxGLButtonControl({
+                className: "mapbox-gl-draw_polygon",
+                title: "Measure tool",
+                eventHandler: DistanceCalculator.toggle
+            })
+        )
 });
 
-beforeMap.on('load', () => {
-    hideMap('comparison-map-container');
+afterMap.on('load', () => {
+    initializeControls(afterMap);
 
-    initializeControls(beforeMap);
+    addFeatureTooltips(afterMap);
     addFeatureTooltips(beforeMap);
-
-    afterMap.addControl(new mapboxgl.NavigationControl());
-    soloMap.addControl(new mapboxgl.NavigationControl());
 
     let menu = document.getElementById('comparisonMapMenu');
     addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')

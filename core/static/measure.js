@@ -106,7 +106,7 @@ class DistanceCalculator{
         geojson.features = [];
         distanceContainer.innerHTML = '';
         soloMap.getSource('geojson').setData(geojson);
-        beforeMap.getSource('geojson').setData(geojson);
+        afterMap.getSource('geojson').setData(geojson);
     }
 
     static toggle() {
