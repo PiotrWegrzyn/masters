@@ -49,11 +49,11 @@ class SearchController{
 
         } else if (features.length === 0 && this.filterEl.value !== '') {
             const empty = document.createElement('p');
-            empty.textContent = 'No results found';
+            empty.textContent = 'Brak wyników.';
             listingEl.appendChild(empty);
         } else {
             const empty = document.createElement('p');
-            empty.textContent = 'Drag the map to populate results';
+            empty.textContent = 'Brak wyników na danym fragmencie mapy.';
             listingEl.appendChild(empty);
         }
     }
@@ -79,8 +79,8 @@ class SearchController{
 
     createItem = (feature, layer) => {
         const itemLink = document.createElement('a');
-        let data = feature.properties;
-        itemLink.textContent = this.getItemTitle(data, layer);
+        itemLink.classList.add("alert", "alert-secondary")
+        itemLink.textContent = this.getItemTitle(feature.properties, layer);
 
         itemLink.addEventListener('mouseover', () => {
             let tooltip = this.tooltipFacotry.createTooltip(feature, layer, false);
