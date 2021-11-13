@@ -89,9 +89,6 @@ function initializeControls(map) {
 soloMap.on('load', () => {
         hideMap('comparison-map-container');
 
-        let menu = document.getElementById('soloMapMenu');
-        addButton(menu, 'compare', 'Compare Tool OFF', showCompareTool, 'gray')
-
         initializeControls(soloMap);
         addFeatureTooltips(soloMap);
         testSearch(soloMap);
@@ -118,8 +115,6 @@ afterMap.on('load', () => {
     addFeatureTooltips(afterMap);
     addFeatureTooltips(beforeMap);
 
-    let menu = document.getElementById('comparisonMapMenu');
-    addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
     afterMap.addControl(new MapboxGLButtonControl({
             className: "mapbox-gl-draw_polygon",
             title: "Solo map",
@@ -189,23 +184,6 @@ function copyCoordsFromTo(sourceMap, destinationMap){
         center: [coords.lng, coords.lat],
         essential: true
     });
-}
-
-function addButton(menu, id, text, callback, className=''){
-        const link = document.createElement('a');
-        link.id = id;
-        link.href = '#';
-        link.textContent = text;
-        link.className = className;
-
-        // Show or hide layer when the toggle is clicked.
-        link.onclick = function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            callback();
-        };
-
-        menu.appendChild(link);
 }
 
 hiddenMap.on('load', () => {
