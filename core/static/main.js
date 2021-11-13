@@ -98,10 +98,18 @@ soloMap.on('load', () => {
 
         soloMap.addControl(new MapboxGLButtonControl({
                 className: "mapbox-gl-draw_polygon",
+                title: "Compare tool",
+                eventHandler: showCompareTool
+            })
+        )
+
+        soloMap.addControl(new MapboxGLButtonControl({
+                className: "mapbox-gl-draw_line",
                 title: "Measure tool",
                 eventHandler: DistanceCalculator.toggle
             })
         )
+
 });
 
 afterMap.on('load', () => {
@@ -112,7 +120,12 @@ afterMap.on('load', () => {
 
     let menu = document.getElementById('comparisonMapMenu');
     addButton(menu, 'compare', 'Compare Tool ON', showSoloMap, 'green')
-
+    afterMap.addControl(new MapboxGLButtonControl({
+            className: "mapbox-gl-draw_polygon",
+            title: "Solo map",
+            eventHandler: showSoloMap
+        })
+    )
 });
 
 $('select').selectpicker();
