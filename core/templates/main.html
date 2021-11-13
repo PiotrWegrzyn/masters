@@ -38,51 +38,10 @@
         <div class="main-container">
             <div class="pos-f-t">
                 <nav class="navbar navbar-dark bg-dark">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
                     <h5 class="text-white h4">Lokalizacje zrzutów Cichociemnych</h5>
                 </nav>
-                <div class="collapse" id="navbarToggleExternalContent">
-                    <div class="bg-dark p-4">
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="city-input" class="text-white h4">Miasto</label>
-                                <select id="city-input" class="form-control" name="city-input" data-live-search="true">
-                                    {%  for city in cities %}
-                                        <option data-tokens="{{ city.name }}" value="{{ city.coordinates }}">{{ city.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="year-input" class="text-white h4">Rok</label>
-                                <select id="year-input" class="form-control" name="year-input" data-live-search="true">
-                                    {%  for map_year in map_years %}
-                                        <option data-tokens="{{ map_year }}" value="{{ map_year }}">{{ map_year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="author-input" class="text-white h4">Autor</label>
-                                <select id="author-input" class="form-control" name="author-input" data-live-search="true">
-                                    {%  for author in authors %}
-                                        <option data-tokens="{{ author }}" value="{{ author }}">{{ author }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="region-input" class="text-white h4">Region</label>
-                                <select id="region-input" class="form-control" name="region-input" data-live-search="true">
-                                    {%  for region in regions %}
-                                        <option data-tokens="{{ region }}" value="{{ region }}">{{ region }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <div id="solo-map-container" class="map-container h-100 d-flex flex-column" style="display: none" >
+            <div id="solo-map-container" class="map-container d-flex flex-column" style="display: none" >
                 <nav id="soloMapMenu" class="menu"></nav>
                 <div id="distanceSolo" class="distance-container"></div>
                 <div id="historicSolo" class="map"></div>
@@ -94,7 +53,7 @@
                 <div id="feature-listing" class="listing"></div>
             </div>
 
-            <div id="comparison-map-container" class="map-container h-100 d-flex flex-column" style="display: none">
+            <div id="comparison-map-container" class="map-container d-flex flex-column" style="display: none">
                 <div id="comparasion-map" >
                     <nav id="comparisonMapMenu" class="menu"></nav>
                     <div id="distanceCompare" class="distance-container"></div>
