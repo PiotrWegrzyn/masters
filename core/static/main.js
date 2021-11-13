@@ -3,6 +3,7 @@ const style1 = 'ckuo3i3hq301118kfy3ve5nfq';
 const style2 = 'ckplemisi0egv17m4exbntnws';
 const center = {'lat': 21.01178, 'lon': 52.22}
 const zoomLevel = 12;
+let searchVisible = false;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
 let addresses = [];
 let landings = [];
@@ -107,6 +108,13 @@ soloMap.on('load', () => {
             })
         )
 
+        soloMap.addControl(new MapboxGLButtonControl({
+                className: "mapbox-gl-draw_point",
+                title: "Search tool",
+                eventHandler: toggleSearchTool
+            })
+        )
+
 });
 
 afterMap.on('load', () => {
@@ -122,8 +130,6 @@ afterMap.on('load', () => {
         })
     )
 });
-
-$('select').selectpicker();
 
 function setCityLocation() {
     let coordinates = document.getElementById("city-input").value.split(';')
@@ -168,6 +174,11 @@ function showSoloMap() {
     displayClickedPoint();
     DistanceCalculator.clear();
     distanceContainer = document.getElementById('distanceSolo');
+}
+
+function toggleSearchTool() {
+    $(".map-overlay").animate({width: searchVisible ? "15%": "0%"},{ duration: 1500});
+    searchVisible = !searchVisible;
 }
 
 
