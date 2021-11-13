@@ -49,24 +49,27 @@
 
                             <div id="searchCarusel" class="carousel slide" data-interval="false">
                                 <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <div class="alert alert-green" role="alert">
-                                        <h5 class="text-white h4">Lokalizacje zrzutów</h5>
+
+                                    <div class="carousel-item active">
+                                         <div class="alert alert-navy" role="alert">
+                                            <h5 class="text-white h4">Adresy Kontaktowe</h5>
+                                         </div>
+                                         <div id="address-listing" class="listing"></div>
                                     </div>
-                                    <div id="landing-listing" class="listing"></div>
-                                </div>
-                                <div class="carousel-item">
-                                     <div class="alert alert-navy" role="alert">
-                                        <h5 class="text-white h4">Adresy</h5>
+
+                                    <div class="carousel-item">
+                                        <div class="alert alert-green" role="alert">
+                                            <h5 class="text-white h4">Lokalizacje zrzutów</h5>
+                                        </div>
+                                        <div id="landing-listing" class="listing"></div>
                                     </div>
-                                    <div id="address-listing" class="listing"></div>
-                                </div>
-                                <div class="carousel-item">
-                                    <div class="alert alert-purple" role="alert">
-                                        <h5 class="text-white h4">Artyleria</h5>
+
+                                    <div class="carousel-item">
+                                        <div class="alert alert-purple" role="alert">
+                                            <h5 class="text-white h4">Lokalizacje Artylerii</h5>
+                                        </div>
+                                        <div id="artillery-listing" class="listing"></div>
                                     </div>
-                                    <div id="artillery-listing" class="listing"></div>
-                                </div>
                                 </div>
                                 <a class="carousel-control-prev" href="#searchCarusel" role="button" data-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -92,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <div id="hidden-map-container" class="map-container" style="display: none" >
+        <div id="hidden-map-container" class="map-container hidden" >
                 <div id="hiddenMap" class="map"></div>
             </div>
         <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
@@ -101,8 +104,8 @@
         <script src="{% static 'search.js' %}"></script>
         <script src="{% static 'measure.js' %}"></script>
         <script src="{% static 'keyboardControls.js' %}"></script>
-        <script src="{% static 'main.js' %}"></script>
         <script src="{% static 'tooltips.js' %}"></script>
+        <script src="{% static 'main.js' %}"></script>
 
     </body>
 </html>

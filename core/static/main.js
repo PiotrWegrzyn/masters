@@ -9,6 +9,7 @@ let addresses = [];
 let landings = [];
 let artillery = [];
 
+let tooltipFactory = new TooltipFactory();
 
 let hiddenMap = new mapboxgl.Map({
     container: 'hiddenMap',
@@ -46,8 +47,16 @@ let map = new mapboxgl.Compare(
     '#comparasion-map',
 );
 
+let searchController
+
 
 function initializeControls(map) {
+    map.addControl(
+        new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        })
+    );
     KeyboardControls.attach(map);
     DistanceCalculator.attach(map);
 
@@ -68,42 +77,37 @@ function initializeControls(map) {
             unit: 'metric'
         })
     );
-    map.addControl(
-        new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
-    })
-);
-
 }
 
 soloMap.on('load', () => {
-        hideMap('comparison-map-container');
+    hideMap('comparison-map-container');
 
-        initializeControls(soloMap);
-        addFeatureTooltips(soloMap);
-        SearchController.attach(soloMap);
+    initializeControls(soloMap);
+    addFeatureTooltips(soloMap);
 
-        soloMap.addControl(new MapboxGLButtonControl({
-                className: "mapbox-gl-draw_polygon",
-                title: "Compare tool",
-                eventHandler: showCompareTool
-            })
-        )
+    soloMap.addControl(new MapboxGLButtonControl({
+            className: "mapbox-gl-draw_polygon",
+            title: "Compare tool",
+            eventHandler: showCompareTool
+        })
+    )
 
-        soloMap.addControl(new MapboxGLButtonControl({
-                className: "mapbox-gl-draw_line",
-                title: "Measure tool",
-                eventHandler: DistanceCalculator.toggle
-            })
-        )
+    soloMap.addControl(new MapboxGLButtonControl({
+            className: "mapbox-gl-draw_line",
+            title: "Measure tool",
+            eventHandler: DistanceCalculator.toggle
+        })
+    )
 
-        soloMap.addControl(new MapboxGLButtonControl({
-                className: "mapbox-gl-draw_point",
-                title: "Search tool",
-                eventHandler: toggleSearchTool
-            })
-        )
+    soloMap.addControl(new MapboxGLButtonControl({
+            className: "mapbox-gl-draw_point",
+            title: "Search tool",
+            eventHandler: toggleSearchTool
+        })
+    )
+
+    searchController = new SearchController(soloMap);
+    searchController.sync();
 
 });
 
@@ -121,44 +125,20 @@ afterMap.on('load', () => {
     )
 });
 
-function setCityLocation() {
-    let coordinates = document.getElementById("city-input").value.split(';')
-    beforeMap.flyTo({
-        center: [coordinates[0], coordinates[1]],
-        essential: true
-    });
-
-}
-
-function displayClickedPoint() {
-    console.log(beforeMap)
-    let selectedFeatures = beforeMap.queryRenderedFeatures(options={
-        layers: [ADDRESS_LAYER]
-    });
-    console.log(selectedFeatures);
-    const fips = selectedFeatures.map(
-        (feature) => feature.properties.Nazwa
-    );
-    console.log(fips);
-}
-
-
 function showCompareTool() {
-    copyZoomFromTo(soloMap, beforeMap);
-    copyCoordsFromTo(soloMap, beforeMap);
+    copyZoomFromTo(soloMap, afterMap);
+    copyCoordsFromTo(soloMap, afterMap);
     showMap('comparison-map-container');
     hideMap('solo-map-container');
-    displayClickedPoint();
     DistanceCalculator.clear();
     distanceContainer = document.getElementById('distanceCompare');
 }
 
 function showSoloMap() {
-    copyZoomFromTo(beforeMap, soloMap);
-    copyCoordsFromTo(beforeMap, soloMap);
+    copyZoomFromTo(afterMap, soloMap);
+    copyCoordsFromTo(afterMap, soloMap);
     showMap('solo-map-container');
     hideMap('comparison-map-container');
-    displayClickedPoint();
     DistanceCalculator.clear();
     distanceContainer = document.getElementById('distanceSolo');
 }
@@ -190,10 +170,9 @@ hiddenMap.on('load', () => {
     landings = getFeatures(ARTILLERY_LAYER);
 });
 
-function addPointTooltipListener(map, TooltipFactoryClass, layer) {
+function addPointTooltipListener(map, layer) {
     map.on('click', layer, (point) => {
-        let factory = new TooltipFactoryClass();
-        addTooltipToMap(map, factory, point)
+        addTooltipToMap(map, point, layer)
         map.flyTo({
                 center: point.features[0].geometry.coordinates
         });
@@ -202,19 +181,19 @@ function addPointTooltipListener(map, TooltipFactoryClass, layer) {
 
 function addFeatureTooltips(map){
 
-    addPointTooltipListener(map, AddressTooltipFactory, ADDRESS_LAYER);
+    addPointTooltipListener(map, ADDRESS_LAYER);
     addMousePointer(map, ADDRESS_LAYER);
 
-    addPointTooltipListener(map, LandingTooltipFactory, LANDINGS_LAYER);
+    addPointTooltipListener(map, LANDINGS_LAYER);
     addMousePointer(map, LANDINGS_LAYER);
 
-    addPointTooltipListener(map, ArtilleryTooltipFactory, ARTILLERY_LAYER);
+    addPointTooltipListener(map, ARTILLERY_LAYER);
     addMousePointer(map, ARTILLERY_LAYER);
 }
 
 
-function addTooltipToMap(map, tooltipFactory, point){
+function addTooltipToMap(map, point, layer){
     let pointData = point.features[0];
-    let tooltip = tooltipFactory.createTooltip(pointData);
+    let tooltip = tooltipFactory.createTooltip(pointData, layer);
     tooltip.addTo(map);
 }
