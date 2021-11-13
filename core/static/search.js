@@ -1,9 +1,4 @@
-let search = (features, value) =>{
-    let filteredFeatures = filterFeatures(features, value);
-    //hide features that were not filtered
-    //zoom too filtered features
-}
-
+let currentSearchLayer = ADDRESS_LAYER;
 
 let filterFeatures = (features, value) => {
     return features.filter(obj=>isMatch(obj, value))
@@ -70,17 +65,22 @@ let testSearch = (map) => {
     }
 
     map.on('moveend', () => {
-        // const features = map.queryRenderedFeatures({layers: ['adresy-kontaktowe-4jmjk0']});
-        let features = getFeatures(ADDRESS_LAYER);
-        if (features) {
-            renderListings(features);
+        if(currentSearchLayer){
+            // const features = map.queryRenderedFeatures({layers: ['adresy-kontaktowe-4jmjk0']});
+            let features = map.queryRenderedFeatures(options={
+                layers: [currentSearchLayer]
+            });
 
-            // Clear the input container
-            filterEl.value = '';
+            if (features) {
+                renderListings(features);
 
-            // Store the current features in sn `addresss` variable to
-            // later use for filtering on `keyup`.
-            addresss = features;
+                // Clear the input container
+                filterEl.value = '';
+
+                // Store the current features in sn `addresss` variable to
+                // later use for filtering on `keyup`.
+                addresss = features;
+            }
         }
     });
 
