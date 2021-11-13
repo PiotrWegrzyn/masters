@@ -121,7 +121,7 @@ class SearchController{
     }
 
     toggle = () => {
-        this.searchVisible = !searchController;
+        this.searchVisible = !this.searchVisible;
     }
 
     isVisible = () => this.searchVisible;
