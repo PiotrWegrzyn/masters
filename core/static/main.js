@@ -33,13 +33,6 @@ let afterMap = new mapboxgl.Map({
     style: 'mapbox://styles/piotrwegrzyn/' + style2
 });
 
-afterMap.addControl(
-    new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl
-    })
-);
-
 let soloMap = new mapboxgl.Map({
     container: 'historicSolo',
     center: [center.lat, center.lon],
@@ -47,19 +40,10 @@ let soloMap = new mapboxgl.Map({
     style: 'mapbox://styles/piotrwegrzyn/' + style1
 });
 
-soloMap.addControl(
-    new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl
-    })
-);
-
-let container = '#comparasion-map';
-
 let map = new mapboxgl.Compare(
     beforeMap,
     afterMap,
-    container,
+    '#comparasion-map',
 );
 
 
@@ -84,6 +68,12 @@ function initializeControls(map) {
             unit: 'metric'
         })
     );
+    map.addControl(
+        new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl
+    })
+);
 
 }
 
@@ -92,7 +82,7 @@ soloMap.on('load', () => {
 
         initializeControls(soloMap);
         addFeatureTooltips(soloMap);
-        testSearch(soloMap);
+        SearchController.attach(soloMap);
 
         soloMap.addControl(new MapboxGLButtonControl({
                 className: "mapbox-gl-draw_polygon",

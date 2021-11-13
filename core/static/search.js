@@ -1,4 +1,3 @@
-let currentSearchLayer = ADDRESS_LAYER;
 
 let filterFeatures = (features, value) => {
     return features.filter(obj=>isMatch(obj, value))
@@ -6,7 +5,10 @@ let filterFeatures = (features, value) => {
 let isMatch = (obj, value) => {
     return JSON.stringify(obj).slice(1,-1).replaceAll('"', "").normalize().toLowerCase().match(value.toLowerCase());
 }
-let testSearch = (map) => {
+class SearchController{
+    currentSearchLayer = ADDRESS_LAYER;
+
+    static attach = (map) =>{
 
     // Holds visible airport features for filtering
     let addresss = [];
@@ -63,10 +65,10 @@ let testSearch = (map) => {
     }
 
     map.on('moveend', () => {
-        if(currentSearchLayer){
+        if(SearchController.currentSearchLayer){
             // const features = map.queryRenderedFeatures({layers: ['adresy-kontaktowe-4jmjk0']});
             let features = map.queryRenderedFeatures(options={
-                layers: [currentSearchLayer]
+                layers: [SearchController.currentSearchLayer]
             });
 
             if (features) {
@@ -101,4 +103,9 @@ let testSearch = (map) => {
     // Call this function on initialization
     // passing an empty array to render an empty state
     renderListings([]);
+
+
+    }
+
+
 }
