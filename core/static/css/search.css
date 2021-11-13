@@ -18,6 +18,14 @@
     background: #563d7c;
 }
 
+.alert-green{
+    background: #3c7c4a;
+}
+
+.alert-navy{
+    background: #223da2;
+}
+
 
 #feature-filter{
     margin: 10px;
