@@ -4,7 +4,7 @@
 }
 .map-container {
     position: relative;
-    height: 94vh;
+    height: 94vh !important;
     min-height: 250px;
     width: 100vw;
 }
