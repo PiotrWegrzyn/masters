@@ -86,7 +86,7 @@ soloMap.on('load', () => {
     addFeatureTooltips(soloMap);
 
     soloMap.addControl(new MapboxGLButtonControl({
-            className: "mapbox-gl-draw_polygon",
+            className: "mapbox-gl-compare",
             title: "Compare tool",
             eventHandler: showCompareTool
         })
@@ -100,7 +100,7 @@ soloMap.on('load', () => {
     )
 
     soloMap.addControl(new MapboxGLButtonControl({
-            className: "mapbox-gl-draw_point",
+            className: "mapbox-gl-search",
             title: "Search tool",
             eventHandler: toggleSearchTool
         })
@@ -118,7 +118,7 @@ afterMap.on('load', () => {
     addFeatureTooltips(beforeMap);
 
     afterMap.addControl(new MapboxGLButtonControl({
-            className: "mapbox-gl-draw_polygon",
+            className: "mapbox-gl-compare",
             title: "Solo map",
             eventHandler: showSoloMap
         })
