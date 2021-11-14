@@ -183,9 +183,6 @@ hiddenMap.on('load', () => {
 function addPointTooltipListener(map, layer) {
     map.on('click', layer, (point) => {
         addTooltipToMap(map, point, layer)
-        map.flyTo({
-                center: point.features[0].geometry.coordinates
-        });
     });
 }
 
