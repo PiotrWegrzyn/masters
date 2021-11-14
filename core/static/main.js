@@ -1,6 +1,6 @@
-const styleStreets = 'ckvyh0o0t3cfa14qe8zuiwffn';
+const styleSatellite = 'ckvyh0o0t3cfa14qe8zuiwffn';
 const styleHistorical = 'ckubedlxk66a619nsl38bn9en';
-const styleMaps = 'ckplemisi0egv17m4exbntnws';
+const styleStreets = 'ckvyjnwtk1k3j14nxr6l4m69m';
 const center = {'lat': 21.01178, 'lon': 52.22}
 const zoomLevel = 12;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
@@ -19,7 +19,7 @@ let hiddenMap = new mapboxgl.Map({
 });
 
 let beforeMap = new mapboxgl.Map({
-    container: 'streets',
+    container: 'beforeMap',
     style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical,
     center: [center.lat, center.lon],
     zoom: zoomLevel,
@@ -27,10 +27,10 @@ let beforeMap = new mapboxgl.Map({
 });
 
 let afterMap = new mapboxgl.Map({
-    container: 'historic',
+    container: 'afterMap',
     center: [center.lat, center.lon],
     zoom: zoomLevel,
-    style: 'mapbox://styles/piotrwegrzyn/' + styleMaps
+    style: 'mapbox://styles/piotrwegrzyn/' + styleStreets
 });
 
 let soloMap = new mapboxgl.Map({
@@ -122,6 +122,18 @@ afterMap.on('load', () => {
             eventHandler: showSoloMap
         })
     )
+
+    const layerList = document.getElementById('menu');
+    const inputs = layerList.getElementsByTagName('input');
+
+    for (const input of inputs) {
+        input.onclick = (layer) => {
+            const layerId = layer.target.id;
+            afterMap.setStyle('mapbox://styles/piotrwegrzyn/' + layerId);
+        };
+    }
+
+
 });
 
 function showCompareTool() {
