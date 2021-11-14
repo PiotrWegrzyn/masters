@@ -1,3 +1,4 @@
+const mapboxUrl = 'mapbox://styles/piotrwegrzyn/';
 const styleSatellite = 'ckvyh0o0t3cfa14qe8zuiwffn';
 const styleHistorical = 'ckubedlxk66a619nsl38bn9en';
 const styleStreets = 'ckvyjnwtk1k3j14nxr6l4m69m';
@@ -12,7 +13,7 @@ let tooltipFactory = new TooltipFactory();
 
 let hiddenMap = new mapboxgl.Map({
     container: 'hiddenMap',
-    style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical,
+    style: mapboxUrl + styleHistorical,
     center: [center.lat, center.lon],
     zoom: 1,
 
@@ -20,7 +21,7 @@ let hiddenMap = new mapboxgl.Map({
 
 let beforeMap = new mapboxgl.Map({
     container: 'beforeMap',
-    style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical,
+    style: mapboxUrl + styleHistorical,
     center: [center.lat, center.lon],
     zoom: zoomLevel,
 
@@ -30,14 +31,14 @@ let afterMap = new mapboxgl.Map({
     container: 'afterMap',
     center: [center.lat, center.lon],
     zoom: zoomLevel,
-    style: 'mapbox://styles/piotrwegrzyn/' + styleStreets
+    style: mapboxUrl + styleSatellite
 });
 
 let soloMap = new mapboxgl.Map({
     container: 'historicSolo',
     center: [center.lat, center.lon],
     zoom: zoomLevel,
-    style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical
+    style: mapboxUrl + styleHistorical
 });
 
 let map = new mapboxgl.Compare(
@@ -127,13 +128,11 @@ afterMap.on('load', () => {
     const inputs = layerList.getElementsByTagName('input');
 
     for (const input of inputs) {
-        input.onclick = (layer) => {
-            const layerId = layer.target.id;
-            afterMap.setStyle('mapbox://styles/piotrwegrzyn/' + layerId);
+        input.onclick = (el) => {
+            let styleId = (el.target.id === 'satellite') ? styleSatellite:styleStreets;
+            afterMap.setStyle(mapboxUrl + styleId);
         };
     }
-
-
 });
 
 function showCompareTool() {
