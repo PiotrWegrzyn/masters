@@ -1,6 +1,6 @@
-const oldstyle = 'cknycny9p1m6l17np8zp5s27p';
-const style1 = 'ckuo3i3hq301118kfy3ve5nfq';
-const style2 = 'ckplemisi0egv17m4exbntnws';
+const styleStreets = 'ckvyh0o0t3cfa14qe8zuiwffn';
+const styleHistorical = 'ckubedlxk66a619nsl38bn9en';
+const styleMaps = 'ckplemisi0egv17m4exbntnws';
 const center = {'lat': 21.01178, 'lon': 52.22}
 const zoomLevel = 12;
 mapboxgl.accessToken = 'pk.eyJ1IjoicGlvdHJ3ZWdyenluIiwiYSI6ImNrbnlhcGhjZDFmNTUybnFueDBkaTN2YmoifQ.NtAHQdnLqpzGMssi1NE6rQ';
@@ -12,7 +12,7 @@ let tooltipFactory = new TooltipFactory();
 
 let hiddenMap = new mapboxgl.Map({
     container: 'hiddenMap',
-    style: 'mapbox://styles/piotrwegrzyn/' + style1,
+    style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical,
     center: [center.lat, center.lon],
     zoom: 1,
 
@@ -20,7 +20,7 @@ let hiddenMap = new mapboxgl.Map({
 
 let beforeMap = new mapboxgl.Map({
     container: 'streets',
-    style: 'mapbox://styles/piotrwegrzyn/' + style1,
+    style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical,
     center: [center.lat, center.lon],
     zoom: zoomLevel,
 
@@ -30,14 +30,14 @@ let afterMap = new mapboxgl.Map({
     container: 'historic',
     center: [center.lat, center.lon],
     zoom: zoomLevel,
-    style: 'mapbox://styles/piotrwegrzyn/' + style2
+    style: 'mapbox://styles/piotrwegrzyn/' + styleMaps
 });
 
 let soloMap = new mapboxgl.Map({
     container: 'historicSolo',
     center: [center.lat, center.lon],
     zoom: zoomLevel,
-    style: 'mapbox://styles/piotrwegrzyn/' + style1
+    style: 'mapbox://styles/piotrwegrzyn/' + styleHistorical
 });
 
 let map = new mapboxgl.Compare(

@@ -72,9 +72,8 @@ class SearchController{
     }
 
     getFeatures = (layer) =>{
-        return this.map.queryRenderedFeatures(options={
-            layers: [layer]
-        });
+        let options = {layers: [layer]}
+        return this.map.queryRenderedFeatures(options);
     }
 
     createItem = (feature, layer) => {
