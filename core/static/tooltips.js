@@ -37,7 +37,7 @@ class Tooltip {
     }
 
     createTitle(data) {
-        return 'dupa';
+        return '';
     }
 }
 
